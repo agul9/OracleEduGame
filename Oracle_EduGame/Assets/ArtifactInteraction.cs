@@ -4,23 +4,47 @@ public class ArtifactInteraction : MonoBehaviour
 {
     public GameObject muralToShow;
     public GameObject boneCharacter;
+    private bool isPlayerInRange;
+    public GameObject interactPrompt;
 
-    public void OnTriggerEnter (Collider other)
+    void Update()
     {
-        if (other.CompareTag("Player"))
+        if (isPlayerInRange && Input.GetKeyDown(KeyCode.E))
         {
-            ActivateMural();
+            // if player collides with mural and presses E, show the mural
+            ToggleMural();
         }
     }
 
-    void ActivateMural ()
+    private void OnTriggerEnter (Collider other)
     {
-        muralToShow.SetActive(true);
-        if (boneCharacter != null)
+        if (other.CompareTag("Player"))
         {
-         boneCharacter.SetActive(true);   
+            // if player collides with the mural, set var to true
+            isPlayerInRange = true;
+            interactPrompt.SetActive(true);
         }
-        
-        Debug.Log("The mural should be showing now...");
+    }
+
+    private void OnTriggerExit (Collider other)
+    {
+        if (other.CompareTag("Player"))
+        {
+            // once they leave, stop showing the mural
+            isPlayerInRange = false;
+            muralToShow.SetActive(false);
+            interactPrompt.SetActive(false);
+        }
+    }
+
+    void ToggleMural ()
+    {
+        if (muralToShow.activeSelf)
+        {
+            muralToShow.SetActive(false);
+        } else
+        {
+            muralToShow.SetActive(true);
+        }
     }
 }
