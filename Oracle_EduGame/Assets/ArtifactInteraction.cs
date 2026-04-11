@@ -1,50 +1,77 @@
 using UnityEngine;
+using System.Collections;
 
 public class ArtifactInteraction : MonoBehaviour
 {
-    public GameObject muralToShow;
-    public GameObject boneCharacter;
-    private bool isPlayerInRange;
+    public CanvasGroup muralGroup; // Drag the Mural's Canvas Group here
     public GameObject interactPrompt;
+    public float fadeSpeed = 1.5f;
+    private bool isPlayerInRange;
+    private bool isMuralVisible = false;
+
+    void Start()
+    {
+        muralGroup.alpha = 0;
+        muralGroup.gameObject.SetActive(false);
+    }
 
     void Update()
     {
         if (isPlayerInRange && Input.GetKeyDown(KeyCode.E))
         {
-            // if player collides with mural and presses E, show the mural
-            ToggleMural();
+            if (!isMuralVisible)
+            {
+                StopAllCoroutines(); // Prevents "flickering" if they spam E
+                StartCoroutine(FadeMural(0, 1));
+                isMuralVisible = true;
+            }
+            else
+            {
+                StopAllCoroutines();
+                StartCoroutine(FadeMural(1, 0));
+                isMuralVisible = false;
+            }
         }
     }
 
-    private void OnTriggerEnter (Collider other)
+    IEnumerator FadeMural(float startAlpha, float endAlpha)
+    {
+        if (endAlpha > 0) muralGroup.gameObject.SetActive(true);
+
+        float timer = 0;
+        while (timer < 1.0f)
+        {
+            timer += Time.deltaTime * fadeSpeed;
+            muralGroup.alpha = Mathf.Lerp(startAlpha, endAlpha, timer);
+            yield return null;
+        }
+
+        if (endAlpha <= 0) muralGroup.gameObject.SetActive(false);
+    }
+
+    // --- Interaction Triggers ---
+    private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Player"))
         {
-            // if player collides with the mural, set var to true
             isPlayerInRange = true;
             interactPrompt.SetActive(true);
         }
     }
 
-    private void OnTriggerExit (Collider other)
+    private void OnTriggerExit(Collider other)
     {
         if (other.CompareTag("Player"))
         {
-            // once they leave, stop showing the mural
             isPlayerInRange = false;
-            muralToShow.SetActive(false);
             interactPrompt.SetActive(false);
-        }
-    }
-
-    void ToggleMural ()
-    {
-        if (muralToShow.activeSelf)
-        {
-            muralToShow.SetActive(false);
-        } else
-        {
-            muralToShow.SetActive(true);
+            
+            // Auto-hide mural when they walk away
+            if (isMuralVisible)
+            {
+                StartCoroutine(FadeMural(1, 0));
+                isMuralVisible = false;
+            }
         }
     }
 }
