@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using UnityEngine.UI;
 
 public class ArtifactInteraction : MonoBehaviour
 {
@@ -7,10 +8,11 @@ public class ArtifactInteraction : MonoBehaviour
     public static int artifactsDecoded = 0;
     private bool hasBeenCounted = false;
     public CanvasGroup muralGroup;
-    public GameObject interactPrompt;
+    public GameObject interactPrompt; // 'press E'
     public float fadeSpeed = 1.5f;
     private bool isPlayerInRange;
     private bool isMuralVisible = false;
+    public Image charUI; // the image of the character
 
     void Start()
     {
@@ -22,11 +24,13 @@ public class ArtifactInteraction : MonoBehaviour
     {
         if (touchedOracleBone && isPlayerInRange && Input.GetKeyDown(KeyCode.E))
         {
+            interactPrompt.SetActive(false);
             if (!isMuralVisible)
             {
                 StopAllCoroutines(); // in case they spam E
                 StartCoroutine(FadeMural(0, 1));
                 isMuralVisible = true;
+                charUI.gameObject.SetActive(true);
 
                 if (!hasBeenCounted) 
                 {
@@ -40,6 +44,7 @@ public class ArtifactInteraction : MonoBehaviour
                 StopAllCoroutines();
                 StartCoroutine(FadeMural(1, 0));
                 isMuralVisible = false;
+                charUI.gameObject.SetActive(false);
             }
         }
     }
@@ -77,6 +82,7 @@ public class ArtifactInteraction : MonoBehaviour
         {
             isPlayerInRange = false;
             interactPrompt.SetActive(false);
+            charUI.gameObject.SetActive(false);
             
             // hide mural if they walk away
             if (isMuralVisible)
