@@ -6,6 +6,7 @@ TagManager:
   tags:
   - CinemachineTarget
   - Artifact
+  - OracleBone
   layers:
   - Default
   - TransparentFX

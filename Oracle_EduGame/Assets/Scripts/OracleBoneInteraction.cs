@@ -1,6 +1,7 @@
 using UnityEngine;
 using StarterAssets;
 using System.Collections;
+using UnityEngine.UI;
 
 public class OracleBoneInteraction : MonoBehaviour
 {
@@ -12,14 +13,25 @@ public class OracleBoneInteraction : MonoBehaviour
     public float fadeSpeed = 1.5f;
     public GameObject glowEffect;
     private bool isOracleInfoVisible = false;
+
+    // varaibles for play ui test
+    public GameObject fillInTheBlankPanel; 
+    public Image displayImage; 
+    public Sprite[] figmaScreenshots;
     
     void Update()
     {
         if (isPlayerInRange && Input.GetKeyDown(KeyCode.E))
         {
-            ArtifactInteraction.touchedOracleBone = true; // sets this to true the first time they interact with it
-            firstPrompt.SetActive(false);
-            ToggleUI();
+            if (ArtifactInteraction.touchedOracleBone && ArtifactInteraction.artifactsDecoded > 0)
+            {
+                ShowFillInTheBlank();
+            } else
+            {
+                ArtifactInteraction.touchedOracleBone = true; // sets this to true the first time they interact with it
+                firstPrompt.SetActive(false);
+                ToggleUI();
+            }
         }
     }
 
@@ -86,5 +98,21 @@ private void OnTriggerEnter(Collider other)
         }
 
         if (endAlpha <= 0) muralGroup.gameObject.SetActive(false);
+    }
+
+    void ShowFillInTheBlank() 
+    {
+        bool isCurrentlyOpen = fillInTheBlankPanel.activeSelf;
+        fillInTheBlankPanel.SetActive(!isCurrentlyOpen);
+
+        if (!isCurrentlyOpen)
+        {
+            int count = ArtifactInteraction.artifactsDecoded; 
+            if (count > 0) 
+            {
+                int index = Mathf.Clamp(count - 1, 0, figmaScreenshots.Length - 1);
+                displayImage.sprite = figmaScreenshots[index];
+            }
+        }
     }
 }
