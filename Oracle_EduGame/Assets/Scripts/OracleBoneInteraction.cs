@@ -11,6 +11,7 @@ public class OracleBoneInteraction : MonoBehaviour
     public GameObject interactPrompt; // this is i think either the instructions or the quiz
     public CanvasGroup muralGroup;
     public float fadeSpeed = 1.5f;
+    public Image charUI; // the image of the character/sentence
     public GameObject glowEffect;
     private bool isOracleInfoVisible = false;
 
@@ -58,6 +59,7 @@ private void OnTriggerEnter(Collider other)
             {
                 isOracleInfoVisible = false;
                 interactPrompt.SetActive(false);
+                charUI.gameObject.SetActive(false);
                 StopAllCoroutines();
                 StartCoroutine(FadeMural(muralGroup.alpha, 0));
             }
@@ -73,6 +75,7 @@ private void OnTriggerEnter(Collider other)
         {
             StartCoroutine(FadeMural(muralGroup.alpha, 1));
             interactPrompt.SetActive(true);
+            charUI.gameObject.SetActive(true);
             firstPrompt.SetActive(false);
             glowEffect.SetActive(false);
             //playerController.enabled = true;
@@ -80,6 +83,7 @@ private void OnTriggerEnter(Collider other)
         {
             StartCoroutine(FadeMural(muralGroup.alpha, 0));
             interactPrompt.SetActive(false);
+            charUI.gameObject.SetActive(false);
             glowEffect.SetActive(false);
             //playerController.enabled = false;
         }
