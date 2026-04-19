@@ -19,6 +19,7 @@ public class OracleBoneInteraction : MonoBehaviour
     public GameObject fillInTheBlankPanel; 
     public Image displayImage; 
     public Sprite[] figmaScreenshots;
+    public GameObject guideBeamParticles; // the light from the artifact to the mural
     
     void Update()
     {
@@ -60,6 +61,7 @@ private void OnTriggerEnter(Collider other)
                 isOracleInfoVisible = false;
                 interactPrompt.SetActive(false);
                 charUI.gameObject.SetActive(false);
+                guideBeamParticles.SetActive(false);
                 StopAllCoroutines();
                 StartCoroutine(FadeMural(muralGroup.alpha, 0));
             }
@@ -78,6 +80,7 @@ private void OnTriggerEnter(Collider other)
             charUI.gameObject.SetActive(true);
             firstPrompt.SetActive(false);
             glowEffect.SetActive(false);
+            guideBeamParticles.SetActive(true);
             //playerController.enabled = true;
         } else
         {
@@ -85,6 +88,7 @@ private void OnTriggerEnter(Collider other)
             interactPrompt.SetActive(false);
             charUI.gameObject.SetActive(false);
             glowEffect.SetActive(false);
+            guideBeamParticles.SetActive(false);
             //playerController.enabled = false;
         }
     }

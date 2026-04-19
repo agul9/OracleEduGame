@@ -15,6 +15,7 @@ public class ArtifactInteraction : MonoBehaviour
     private bool isPlayerInRange;
     private bool isMuralVisible = false;
     public Image charUI; // the image of the character
+    public GameObject guideBeamParticles; // the light from the artifact to the mural
 
     void Start()
     {
@@ -33,12 +34,13 @@ public class ArtifactInteraction : MonoBehaviour
                 StartCoroutine(FadeMural(0, 1));
                 isMuralVisible = true;
                 charUI.gameObject.SetActive(true);
+                guideBeamParticles.SetActive(true);
 
                 if (!hasBeenCounted) 
                 {
                     artifactsDecoded++;
                     hasBeenCounted = true; 
-                    Debug.Log("Artifacts found: " + artifactsDecoded);
+                    //Debug.Log("Artifacts found: " + artifactsDecoded);
                 }
             }
             else
@@ -47,6 +49,7 @@ public class ArtifactInteraction : MonoBehaviour
                 StartCoroutine(FadeMural(1, 0));
                 isMuralVisible = false;
                 charUI.gameObject.SetActive(false);
+                guideBeamParticles.SetActive(false);
             }
         }
     }
@@ -85,6 +88,7 @@ public class ArtifactInteraction : MonoBehaviour
             isPlayerInRange = false;
             interactPrompt.SetActive(false);
             charUI.gameObject.SetActive(false);
+            guideBeamParticles.SetActive(false);
             
             // hide mural if they walk away
             if (isMuralVisible)
