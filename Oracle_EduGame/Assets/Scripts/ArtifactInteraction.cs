@@ -5,7 +5,8 @@ using System.Collections.Generic;
 
 public class ArtifactInteraction : MonoBehaviour
 {
-    public static bool touchedOracleBone = false;
+    public bool needsOracleBoneFirst = true; // false for room 0 bc we don't need it then
+    public static bool touchedOracleBone = false; // meaning, touched the oracle bone in room 1
     public static int artifactsDecoded = 0;
     private bool hasBeenCounted = false;
     public CanvasGroup muralGroup;
@@ -23,7 +24,7 @@ public class ArtifactInteraction : MonoBehaviour
 
     void Update()
     {
-        if (touchedOracleBone && isPlayerInRange && Input.GetKeyDown(KeyCode.E))
+        if ((!needsOracleBoneFirst || touchedOracleBone) && isPlayerInRange && Input.GetKeyDown(KeyCode.E))
         {
             interactPrompt.SetActive(false);
             if (!isMuralVisible)
@@ -70,7 +71,7 @@ public class ArtifactInteraction : MonoBehaviour
         if (other.CompareTag("Player"))
         {
             isPlayerInRange = true;
-            if (touchedOracleBone)
+            if (!needsOracleBoneFirst || touchedOracleBone)
             {
                 interactPrompt.SetActive(true);
             }
