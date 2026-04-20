@@ -4,12 +4,14 @@ using StarterAssets;
 
 public class DoorInteraction : MonoBehaviour
 {
+    public QuizManager quizScript;
     public int numOfArtifacts; // this will be 1 for room 0, and 5 for room 1
     public GameObject doorLight; // make door glow once they finish interacting with all objects
     public GameObject doorObject;
+    public int roomNum; // 0 for room 0, 1 for room 1 - assign in inspector
     public GameObject fillInTheBlankPanel;
     public GameObject interactPrompt; // press E
-    public Image displayImage;
+    //public Image displayImage;
     public Sprite quizPreviewImage;
     private bool isPlayerInRange;
     private bool isDoorOpen = false;
@@ -22,7 +24,7 @@ public class DoorInteraction : MonoBehaviour
     {
         if (isPlayerInRange && Input.GetKeyDown(KeyCode.E) && !isDoorOpen)
         {
-            ShowFillInTheBlank();
+            ShowQuiz();
         }
 
         if (ArtifactInteraction.artifactsDecoded >= numOfArtifacts)
@@ -51,28 +53,25 @@ public class DoorInteraction : MonoBehaviour
         }
     }
 
-void ShowFillInTheBlank() 
+void ShowQuiz() 
 {
-    // 1. Figure out what we are about to do
-    // If the panel is NOT active, it means we are OPENING it now.
+    // Toggle the panel
     bool openingNow = !fillInTheBlankPanel.activeSelf;
-    
-    // 2. Set the panel to that new state
     fillInTheBlankPanel.SetActive(openingNow);
 
     if (openingNow)
     {
-        // --- OPENING SEQUENCE ---
-        LockPlayer(true); // Stop player and show mouse
-        displayImage.sprite = quizPreviewImage;
+        fillInTheBlankPanel.SetActive(true);
+        LockPlayer(true);
+        // Tell the quiz manager to set up the correct room!
+        quizScript.SetupRoom(roomNum); 
     } 
     else 
     {
-        // --- CLOSING SEQUENCE ---
-        LockPlayer(false); // Resume player and hide mouse
-
-        // Only check for the door success AFTER the panel is closed
-        if (ArtifactInteraction.artifactsDecoded >= numOfArtifacts)
+        LockPlayer(false);
+        fillInTheBlankPanel.SetActive(false);
+        // We only check for success if the QuizManager says isFinished is true
+        if (quizScript.isRoomComplete) 
         {
             OpenDoor();
         }

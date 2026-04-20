@@ -18,14 +18,12 @@ public class QuizManager : MonoBehaviour
     public Image[] slotCharacterImages; // Drag the Image components that sit ABOVE the blank buttons here
     public GameObject[] choiceButtons; // Drag your 16 choice buttons here
     public GameObject[] blankSlots;    // Drag your 4 blank buttons here
-    int currentRoom = 1;
+    int currentRoom;
     int[] playerAnswers = new int[4];
+    public bool isRoomComplete = false;
 
     void Start()
     {
-    // This forces the game to set up Room 0 (the 4-button version) 
-    // the moment you hit Play.
-    SetupRoom(currentRoom);
     }
 
     public void SelectChoice(GameObject clickedBtn)
@@ -113,6 +111,23 @@ public class QuizManager : MonoBehaviour
     {
         currentRoom = roomIndex;
         RoomData data = rooms[roomIndex];
+        isRoomComplete = false;
+
+        // 1. Wipe the player's old answers
+        for (int i = 0; i < playerAnswers.Length; i++) {
+            playerAnswers[i] = -1;
+        }
+
+        // 2. Clear the UI slots (so the old sprites aren't there)
+        foreach (GameObject blank in blankSlots) {
+            Transform btn = blank.transform.Find("Button");
+            if (btn != null) {
+                Image img = btn.GetComponent<Image>();
+                img.sprite = null;
+                // Set it to a faint placeholder color or transparent
+                img.color = new Color(1, 1, 1, 0.1f); 
+            }
+        }
 
         // 1. Setup Choices
         for (int i = 0; i < choiceButtons.Length; i++)
@@ -180,8 +195,10 @@ public class QuizManager : MonoBehaviour
 
         if (correctCount == data.blankSprites.Length) {
             Debug.Log("SUCCESS: All " + correctCount + " symbols match!");
+            isRoomComplete = true;
             // Trigger your win animation/sound here
         } else {
+            isRoomComplete = false;
             Debug.Log("FAIL: Only " + correctCount + " are correct.");
         }
     }
