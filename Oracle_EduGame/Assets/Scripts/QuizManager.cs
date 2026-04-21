@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 [System.Serializable]
 public class RoomData { 
@@ -21,6 +22,8 @@ public class QuizManager : MonoBehaviour
     int currentRoom;
     int[] playerAnswers = new int[4];
     public bool isRoomComplete = false;
+    public TMP_Text instructionText;
+    public Image cursor;
 
     void Start()
     {
@@ -41,6 +44,10 @@ public class QuizManager : MonoBehaviour
 
         // Visual feedback
         SetOpacity(selectedButton, 0.5f); 
+
+        // Update the "Chameleon"
+        cursor.sprite = selectedSprite; // Swap the image to the one we just picked
+        cursor.gameObject.SetActive(true); // Show it!
     }
 
     public void PlaceInBlank(GameObject blankSlot)
@@ -78,6 +85,10 @@ public class QuizManager : MonoBehaviour
 
             selectedButton = null;
             selectedID = -1;
+
+            // reset cursor
+            cursor.gameObject.SetActive(false); // Hide it
+            Cursor.visible = true; // Bring back the regular mouse
         }
     }
 
@@ -112,6 +123,7 @@ public class QuizManager : MonoBehaviour
         currentRoom = roomIndex;
         RoomData data = rooms[roomIndex];
         isRoomComplete = false;
+        instructionText.text = "Instructions!";
 
         // 1. Wipe the player's old answers
         for (int i = 0; i < playerAnswers.Length; i++) {
@@ -194,12 +206,13 @@ public class QuizManager : MonoBehaviour
         }
 
         if (correctCount == data.blankSprites.Length) {
-            Debug.Log("SUCCESS: All " + correctCount + " symbols match!");
+            //Debug.Log("SUCCESS: All " + correctCount + " symbols match!");
             isRoomComplete = true;
+            instructionText.text = "SUCCESS: All " + correctCount + " symbols match!";
             // Trigger your win animation/sound here
         } else {
             isRoomComplete = false;
-            Debug.Log("FAIL: Only " + correctCount + " are correct.");
+            instructionText.text = "FAIL: Only " + correctCount + " are correct.";
         }
     }
 }

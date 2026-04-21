@@ -1,6 +1,8 @@
 using UnityEngine;
 using UnityEngine.UI;
 using StarterAssets;
+using System.Collections;
+using UnityEngine.SceneManagement;
 
 public class DoorInteraction : MonoBehaviour
 {
@@ -15,6 +17,7 @@ public class DoorInteraction : MonoBehaviour
     public Sprite quizPreviewImage;
     private bool isPlayerInRange;
     private bool isDoorOpen = false;
+    public GameObject fadePanel; 
     void Start()
     {
         
@@ -82,12 +85,18 @@ void ShowQuiz()
     {
         isDoorOpen = true;
         
-        ArtifactInteraction.artifactsDecoded = 0; // reset for next room
-        ArtifactInteraction.touchedOracleBone = false;
+        if (roomNum == 1)
+        {
+            StartCoroutine(FadeAndEnd());
+        } else
+        {
+            ArtifactInteraction.artifactsDecoded = 0; // reset for next room
+            ArtifactInteraction.touchedOracleBone = false;
         
-        doorObject.SetActive(false); 
-        if (doorLight != null) {
-            doorLight.SetActive(false);
+            doorObject.SetActive(false); 
+            if (doorLight != null) {
+                doorLight.SetActive(false);
+            }
         }
     }
 
@@ -99,4 +108,28 @@ void ShowQuiz()
         var controller = FindFirstObjectByType<FirstPersonController>();
         if(controller != null) controller.enabled = !lockIt;
     }
+
+
+ // Add this at the very top of your script!
+
+IEnumerator FadeAndEnd()
+{
+    fadePanel.SetActive(true);
+    Image panelImage = fadePanel.GetComponent<Image>();
+    float alpha = 0;
+
+    // 1. Fade to Black
+    while (alpha < 1)
+    {
+        alpha += Time.unscaledDeltaTime; 
+        panelImage.color = new Color(0, 0, 0, alpha);
+        yield return null;
+    }
+
+    yield return new WaitForSecondsRealtime(1f);
+
+    // 2. THE NUCLEAR OPTION: Reload the current scene
+    // This resets everything to its original state perfectly.
+    SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+}
 }

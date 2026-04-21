@@ -27,7 +27,7 @@ public class OracleBoneInteraction : MonoBehaviour
         {
             if (ArtifactInteraction.touchedOracleBone && ArtifactInteraction.artifactsDecoded > 0)
             {
-                ShowFillInTheBlank();
+                ToggleUI();
             } else
             {
                 ArtifactInteraction.touchedOracleBone = true; // sets this to true the first time they interact with it
@@ -37,7 +37,7 @@ public class OracleBoneInteraction : MonoBehaviour
         }
     }
 
-private void OnTriggerEnter(Collider other)
+    private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Player"))
         {
@@ -108,19 +108,19 @@ private void OnTriggerEnter(Collider other)
         if (endAlpha <= 0) muralGroup.gameObject.SetActive(false);
     }
 
-    void ShowFillInTheBlank() 
-    {
-        bool isCurrentlyOpen = fillInTheBlankPanel.activeSelf;
-        fillInTheBlankPanel.SetActive(!isCurrentlyOpen);
+    // void ShowFillInTheBlank() 
+    // {
+    //     bool isCurrentlyOpen = fillInTheBlankPanel.activeSelf;
+    //     fillInTheBlankPanel.SetActive(!isCurrentlyOpen);
 
-        if (!isCurrentlyOpen)
-        {
-            int count = ArtifactInteraction.artifactsDecoded; 
-            if (count > 0) 
-            {
-                int index = Mathf.Clamp(count - 1, 0, figmaScreenshots.Length - 1);
-                displayImage.sprite = figmaScreenshots[index];
-            }
-        }
-    }
+    //     if (!isCurrentlyOpen)
+    //     {
+    //         int count = ArtifactInteraction.artifactsDecoded; 
+    //         if (count > 0) 
+    //         {
+    //             int index = Mathf.Clamp(count - 1, 0, figmaScreenshots.Length - 1);
+    //             displayImage.sprite = figmaScreenshots[index];
+    //         }
+    //     }
+    // }
 }
