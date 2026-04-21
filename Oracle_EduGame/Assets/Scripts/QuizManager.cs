@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using System.Collections;
 
 [System.Serializable]
 public class RoomData { 
@@ -24,6 +25,14 @@ public class QuizManager : MonoBehaviour
     public bool isRoomComplete = false;
     public TMP_Text instructionText;
     public Image cursor;
+
+    // lock quiz variables
+    public CanvasGroup quizCanvasGroup; // so we can disable it when locked
+    public int failedAttempts = 0;
+    public GameObject lockOutUI;
+    public float lockoutTime = 20f; // 1 minute
+    public bool isLockedOut = false;
+
 
     void Start()
     {
@@ -213,6 +222,37 @@ public class QuizManager : MonoBehaviour
         } else {
             isRoomComplete = false;
             instructionText.text = "FAIL: Only " + correctCount + " are correct.";
+            failedAttempts++;
+            if (failedAttempts >= 3)
+            {
+                lockOutUI.SetActive(true);
+                StartCoroutine(LockoutTimer());
+            }
         }
+    }
+
+    IEnumerator LockoutTimer()
+    {
+        isLockedOut = true;
+        float timer = lockoutTime;
+
+        // Just kill the buttons/interactions
+        quizCanvasGroup.interactable = false; 
+        quizCanvasGroup.blocksRaycasts = false;
+
+        while (timer > 0)
+        {
+            timer -= Time.unscaledDeltaTime;
+            yield return null;
+        }
+
+        // Reset logic
+        isLockedOut = false;
+        failedAttempts = 0;
+        quizCanvasGroup.interactable = true;
+        quizCanvasGroup.blocksRaycasts = true;
+        
+        // Hide the lockout UI immediately if the player happens to be looking at the quiz
+        if (lockOutUI.activeSelf) lockOutUI.SetActive(false);
     }
 }

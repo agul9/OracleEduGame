@@ -64,6 +64,10 @@ void ShowQuiz()
 
     if (openingNow)
     {
+        if (quizScript.isLockedOut) 
+        {
+            quizScript.lockOutUI.SetActive(true);
+        }
         fillInTheBlankPanel.SetActive(true);
         LockPlayer(true);
         // Tell the quiz manager to set up the correct room!
@@ -73,6 +77,7 @@ void ShowQuiz()
     {
         LockPlayer(false);
         fillInTheBlankPanel.SetActive(false);
+        quizScript.lockOutUI.SetActive(false);
         // We only check for success if the QuizManager says isFinished is true
         if (quizScript.isRoomComplete) 
         {
