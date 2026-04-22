@@ -114,7 +114,7 @@ public class DoorInteraction : MonoBehaviour
         }
     }
 
-    void LockPlayer(bool lockIt)
+    public static void LockPlayer(bool lockIt)
     {
         Cursor.lockState = lockIt ? CursorLockMode.None : CursorLockMode.Locked;
         Cursor.visible = lockIt;
@@ -122,9 +122,6 @@ public class DoorInteraction : MonoBehaviour
         var controller = FindFirstObjectByType<FirstPersonController>();
         if(controller != null) controller.enabled = !lockIt;
     }
-
-
- // Add this at the very top of your script!
 
 IEnumerator FadeAndEnd()
 {

@@ -11,11 +11,15 @@ public class ArtifactInteraction : MonoBehaviour
     private bool hasBeenCounted = false;
     public CanvasGroup muralGroup;
     public GameObject interactPrompt; // 'press E'
+    public GameObject pressFInteractPrompt; // 'press f'
     public float fadeSpeed = 1.5f;
     private bool isPlayerInRange;
     private bool isMuralVisible = false;
     public Image charUI; // the image of the character
     public GameObject guideBeamParticles; // the light from the artifact to the mural
+    public GameObject muralOverlay;
+    public bool muralIsOverlayed;
+    public Image sourceMuralImage;
 
     void Start()
     {
@@ -35,6 +39,7 @@ public class ArtifactInteraction : MonoBehaviour
                 isMuralVisible = true;
                 charUI.gameObject.SetActive(true);
                 guideBeamParticles.SetActive(true);
+                pressFInteractPrompt.SetActive(true);
 
                 if (!hasBeenCounted) 
                 {
@@ -50,6 +55,21 @@ public class ArtifactInteraction : MonoBehaviour
                 isMuralVisible = false;
                 charUI.gameObject.SetActive(false);
                 guideBeamParticles.SetActive(false);
+            }
+        }
+
+        if (isMuralVisible && isPlayerInRange && Input.GetKeyDown(KeyCode.F)) {
+            muralIsOverlayed = !muralIsOverlayed;
+            if (muralIsOverlayed)
+            {
+                muralOverlay.transform.Find("Image").GetComponent<Image>().sprite = sourceMuralImage.sprite;                DoorInteraction.LockPlayer(true);
+                muralOverlay.SetActive(true);
+                DoorInteraction.LockPlayer(true);
+                pressFInteractPrompt.SetActive(false);
+            } else
+            {
+                muralOverlay.SetActive(false);
+                DoorInteraction.LockPlayer(false);
             }
         }
     }
@@ -89,6 +109,7 @@ public class ArtifactInteraction : MonoBehaviour
             interactPrompt.SetActive(false);
             charUI.gameObject.SetActive(false);
             guideBeamParticles.SetActive(false);
+            pressFInteractPrompt.SetActive(false);
             
             // hide mural if they walk away
             if (isMuralVisible)

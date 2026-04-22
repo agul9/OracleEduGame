@@ -20,6 +20,10 @@ public class OracleBoneInteraction : MonoBehaviour
     public Image displayImage; 
     public Sprite[] figmaScreenshots;
     public GameObject guideBeamParticles; // the light from the artifact to the mural
+
+    public GameObject muralOverlay;
+    public bool muralIsOverlayed;
+    public Image sourceMuralImage;
     
     void Update()
     {
@@ -33,6 +37,20 @@ public class OracleBoneInteraction : MonoBehaviour
                 ArtifactInteraction.touchedOracleBone = true; // sets this to true the first time they interact with it
                 firstPrompt.SetActive(false);
                 ToggleUI();
+            }
+        }
+
+        if (isOracleInfoVisible && isPlayerInRange && Input.GetKeyDown(KeyCode.F)) {
+            muralIsOverlayed = !muralIsOverlayed;
+            if (muralIsOverlayed)
+            {
+                muralOverlay.transform.Find("Image").GetComponent<Image>().sprite = sourceMuralImage.sprite;                DoorInteraction.LockPlayer(true);
+                muralOverlay.SetActive(true);
+                DoorInteraction.LockPlayer(true);
+            } else
+            {
+                muralOverlay.SetActive(false);
+                DoorInteraction.LockPlayer(false);
             }
         }
     }
