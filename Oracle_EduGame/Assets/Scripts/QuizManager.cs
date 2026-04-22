@@ -8,6 +8,7 @@ public class RoomData {
     public Sprite[] choiceSprites; // All available images for this room
     public Sprite[] blankSprites;  // The specific "Oracle Bone" images that float above the blanks
     public int[] correctAnswers;
+    public GameObject successPopup; // Per-room success popup UI
 }
 
 public class QuizManager : MonoBehaviour
@@ -33,6 +34,7 @@ public class QuizManager : MonoBehaviour
     public float lockoutTime;
     public bool isLockedOut = false;
     public float timerEndTime; // records when the timer should end, so that when they close the quiz and the timer ends, it still knows when to unlock
+    GameObject currentSuccessPopup;
 
 
 
@@ -42,6 +44,11 @@ public class QuizManager : MonoBehaviour
 
     void Update()
     {
+        if (Input.GetKeyDown(KeyCode.E))
+        {
+            CloseAllSuccessPopups();
+        }
+
         // If we are currently in a lockout state
         if (isLockedOut)
         {
@@ -58,6 +65,23 @@ public class QuizManager : MonoBehaviour
                 
                 // If you have a countdown text:
                 // timerText.text = Mathf.Ceil(timerEndTime - Time.unscaledTime) + "s";
+            }
+        }
+    }
+
+    public void CloseAllSuccessPopups()
+    {
+        if (currentSuccessPopup != null)
+        {
+            currentSuccessPopup.SetActive(false);
+            currentSuccessPopup = null;
+        }
+
+        foreach (RoomData room in rooms)
+        {
+            if (room != null && room.successPopup != null && room.successPopup.activeSelf)
+            {
+                room.successPopup.SetActive(false);
             }
         }
     }
@@ -158,6 +182,16 @@ public class QuizManager : MonoBehaviour
         isRoomComplete = false;
         instructionText.text = "Select a translation, then click the blank to place it";
 
+        // Hide all success popups when entering/resetting a room.
+        foreach (RoomData room in rooms)
+        {
+            if (room != null && room.successPopup != null)
+            {
+                room.successPopup.SetActive(false);
+            }
+        }
+        currentSuccessPopup = null;
+
         // 1. Wipe the player's old answers
         for (int i = 0; i < playerAnswers.Length; i++) {
             playerAnswers[i] = -1;
@@ -242,6 +276,11 @@ public class QuizManager : MonoBehaviour
             //Debug.Log("SUCCESS: All " + correctCount + " symbols match!");
             isRoomComplete = true;
             instructionText.text = "SUCCESS: All " + correctCount + " symbols match!";
+            if (data.successPopup != null)
+            {
+                data.successPopup.SetActive(true);
+                currentSuccessPopup = data.successPopup;
+            }
             // Trigger your win animation/sound here
         } else {
             isRoomComplete = false;

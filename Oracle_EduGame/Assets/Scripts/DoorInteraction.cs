@@ -85,6 +85,7 @@ public class DoorInteraction : MonoBehaviour
         else 
         {
             // Closing logic
+            quizScript.CloseAllSuccessPopups();
             LockPlayer(false);
             fillInTheBlankPanel.SetActive(false);
             quizScript.lockOutUI.SetActive(false); // Hide red screen on exit
