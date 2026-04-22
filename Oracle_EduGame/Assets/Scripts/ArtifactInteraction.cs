@@ -31,6 +31,7 @@ public class ArtifactInteraction : MonoBehaviour
     {
         if ((!needsOracleBoneFirst || touchedOracleBone) && isPlayerInRange && Input.GetKeyDown(KeyCode.E))
         {
+            Debug.Log("Artifact Script is firing!");
             interactPrompt.SetActive(false);
             if (!isMuralVisible)
             {
