@@ -156,7 +156,7 @@ public class QuizManager : MonoBehaviour
         currentRoom = roomIndex;
         RoomData data = rooms[roomIndex];
         isRoomComplete = false;
-        instructionText.text = "Instructions!";
+        instructionText.text = "Select a translation, then click the blank to place it";
 
         // 1. Wipe the player's old answers
         for (int i = 0; i < playerAnswers.Length; i++) {
