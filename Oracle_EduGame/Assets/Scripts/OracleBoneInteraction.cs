@@ -24,6 +24,7 @@ public class OracleBoneInteraction : MonoBehaviour
     public GameObject muralOverlay;
     public bool muralIsOverlayed;
     public Image sourceMuralImage;
+    public AudioSource oracleMuralAppearSound;
     
     void Update()
     {
@@ -99,6 +100,7 @@ public class OracleBoneInteraction : MonoBehaviour
             firstPrompt.SetActive(false);
             glowEffect.SetActive(false);
             guideBeamParticles.SetActive(true);
+            oracleMuralAppearSound.Play();
             //playerController.enabled = true;
         } else
         {

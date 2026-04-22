@@ -17,7 +17,8 @@ public class DoorInteraction : MonoBehaviour
     public Sprite quizPreviewImage;
     private bool isPlayerInRange;
     private bool isDoorOpen = false;
-    public GameObject fadePanel; 
+    public GameObject fadePanel;
+    public AudioSource doorOpenSound;
     void Start()
     {
         
@@ -107,7 +108,8 @@ public class DoorInteraction : MonoBehaviour
             ArtifactInteraction.artifactsDecoded = 0; // reset for next room
             ArtifactInteraction.touchedOracleBone = false;
         
-            doorObject.SetActive(false); 
+            doorObject.SetActive(false);
+            doorOpenSound.Play();
             if (doorLight != null) {
                 doorLight.SetActive(false);
             }

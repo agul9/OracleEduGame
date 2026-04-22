@@ -20,6 +20,8 @@ public class ArtifactInteraction : MonoBehaviour
     public GameObject muralOverlay;
     public bool muralIsOverlayed;
     public Image sourceMuralImage;
+    public AudioSource muralAppearSound;
+
 
     void Start()
     {
@@ -38,6 +40,7 @@ public class ArtifactInteraction : MonoBehaviour
                 StopAllCoroutines(); // in case they spam E
                 StartCoroutine(FadeMural(0, 1));
                 isMuralVisible = true;
+                muralAppearSound.Play();
                 charUI.gameObject.SetActive(true);
                 guideBeamParticles.SetActive(true);
                 pressFInteractPrompt.SetActive(true);
