@@ -133,24 +133,6 @@ public class DoorInteraction : MonoBehaviour
         }
     }
 
-    void ShowEndingUI()
-    {
-        waitingForRestart = true;
-
-        if (fadePanel != null)
-        {
-            fadePanel.SetActive(false);
-        }
-
-        if (endingUI != null)
-        {
-            endingUI.SetActive(true);
-        }
-
-        // Keep the player/camera locked while waiting for Space.
-        LockPlayer(true);
-    }
-
     public static void LockPlayer(bool lockIt)
     {
         Cursor.lockState = lockIt ? CursorLockMode.None : CursorLockMode.Locked;
@@ -160,24 +142,49 @@ public class DoorInteraction : MonoBehaviour
         if(controller != null) controller.enabled = !lockIt;
     }
 
-IEnumerator FadeAndEnd()
-{
-    fadePanel.SetActive(true);
-    Image panelImage = fadePanel.GetComponent<Image>();
-    float alpha = 0;
-
-    // 1. Fade to Black
-    while (alpha < 1)
+    void ShowEndingUI()
     {
-        alpha += Time.unscaledDeltaTime; 
-        panelImage.color = new Color(0, 0, 0, alpha);
-        yield return null;
+        // Don't just pop things on/off here anymore. 
+        // Start the Coroutine to handle the timing!
+        StartCoroutine(FadeAndEnd());
     }
 
-    yield return new WaitForSecondsRealtime(1f);
+    IEnumerator FadeAndEnd()
+    {
+        // 1. Prepare the Fade Panel
+        fadePanel.SetActive(true);
+        Image panelImage = fadePanel.GetComponent<Image>();
+        float alpha = 0;
 
-    // 2. THE NUCLEAR OPTION: Reload the current scene
-    // This resets everything to its original state perfectly.
-    SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-}
+        // 2. Fade to Black (The dramatic transition)
+        while (alpha < 1)
+        {
+            // Use unscaledDeltaTime in case you have time paused
+            alpha += Time.unscaledDeltaTime; 
+            panelImage.color = new Color(0, 0, 0, alpha);
+            yield return null;
+        }
+
+        // 3. While the screen is black, swap the UI
+        yield return new WaitForSecondsRealtime(0.5f);
+        
+        if (endingUI != null)
+        {
+            endingUI.SetActive(true); // Show the Acknowledgement Screen
+            waitingForRestart = true;
+            LockPlayer(true);
+        }
+
+        // 4. (Optional) Fade the black panel back out so they can see the credits
+        // If your Acknowledgement screen is its own full-screen image, 
+        // you can just leave the black panel on or fade it out slowly:
+        while (alpha > 0)
+        {
+            alpha -= Time.unscaledDeltaTime;
+            panelImage.color = new Color(0, 0, 0, alpha);
+            yield return null;
+        }
+        
+        fadePanel.SetActive(false);
+    }
 }
